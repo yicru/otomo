@@ -39,6 +39,6 @@
     "globals": ["React"]
   },
   "files": {
-    "ignore": [".next"]
+    "ignore": [".next", "src/components/ui"]
   }
 }
