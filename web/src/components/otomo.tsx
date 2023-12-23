@@ -1,3 +1,7 @@
-export const Otomo = () => {
-  return <img src={'/otomo.svg'} alt={''} />
+type Props = {
+  className?: string
+}
+
+export const Otomo = (props: Props) => {
+  return <img className={props.className} src={'/otomo.svg'} alt={''} />
 }

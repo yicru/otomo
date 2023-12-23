@@ -1,8 +1,27 @@
+import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Noto_Sans_JP } from 'next/font/google'
+import localFont from 'next/font/local'
+
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const gambarino = localFont({
+  src: './_fonts/Gambarino-Regular.woff2',
+  display: 'swap',
+  variable: '--font-gambarino',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+})
+
+const notoSansJP = Noto_Sans_JP({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-noto-sans-jp',
+})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,7 +34,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html
+      lang="ja"
+      className={cn(gambarino.variable, inter.variable, notoSansJP.variable)}
+    >
       <body className={inter.className}>{children}</body>
     </html>
   )

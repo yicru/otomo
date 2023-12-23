@@ -1,7 +1,9 @@
+import { NewArticleCard } from '@/features/article/new-article-card'
+
 export default function Home() {
   return (
-    <div className={'p-1'}>
-      <p className={'text-white'}>Home</p>
+    <div className={'p-1.5'}>
+      <NewArticleCard />
     </div>
   )
 }
