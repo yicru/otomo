@@ -13,6 +13,12 @@ const config: Config = {
       },
     },
     extend: {
+      rotate: {
+        4: '4deg',
+      },
+      fontSize: {
+        '2xs': '0.625rem',
+      },
       fontFamily: {
         serif: ['var(--font-gambarino)', ...defaultTheme.fontFamily.serif],
         sans: [
