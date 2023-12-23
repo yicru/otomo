@@ -38,7 +38,7 @@ export default function RootLayout({
       lang="ja"
       className={cn(gambarino.variable, inter.variable, notoSansJP.variable)}
     >
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   )
 }
