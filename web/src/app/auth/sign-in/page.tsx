@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -9,6 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { SignInWithOAuthButton } from '@/features/auth/components/sign-in-with-oauth-button'
 import { SignInWithOtpForm } from '@/features/auth/components/sign-in-with-otp-form'
 
 export default function SignIn() {
@@ -24,31 +24,8 @@ export default function SignIn() {
 
         <CardContent>
           <div className={'space-y-4'}>
-            <Button
-              className={'w-full tracking-wide'}
-              size={'lg'}
-              variant={'secondary'}
-            >
-              <img
-                src={'/github.svg'}
-                className={'h-4 w-4 mr-4'}
-                alt={'GitHub Logo'}
-              />
-              <span>GitHubでログイン</span>
-            </Button>
-
-            <Button
-              className={'w-full tracking-wide'}
-              size={'lg'}
-              variant={'secondary'}
-            >
-              <img
-                src={'/figma.svg'}
-                className={'h-4 w-4 mr-6'}
-                alt={'Figma Logo'}
-              />
-              <span>Figmaでログイン</span>
-            </Button>
+            <SignInWithOAuthButton provider={'github'} className={'w-full'} />
+            <SignInWithOAuthButton provider={'figma'} className={'w-full'} />
           </div>
 
           <div className={'grid grid-cols-[1fr,60px,1fr] items-center mt-6'}>

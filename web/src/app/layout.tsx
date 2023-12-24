@@ -1,3 +1,4 @@
+import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { Inter, Noto_Sans_JP } from 'next/font/google'
@@ -38,7 +39,10 @@ export default function RootLayout({
       lang="ja"
       className={cn(gambarino.variable, inter.variable, notoSansJP.variable)}
     >
-      <body>{children}</body>
+      <body>
+        <main>{children}</main>
+        <Toaster />
+      </body>
     </html>
   )
 }
