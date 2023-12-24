@@ -1,9 +1,26 @@
+import { createSupabaseClient } from '@/lib/supabase/server'
 import { Hono } from 'hono'
+import { cookies } from 'next/headers'
 
 const app = new Hono().basePath('/api')
 
-const route = app.get('/hello', async (c) => {
-  return c.text('Hello, world!')
+const auth = async () => {
+  const cookieStore = cookies()
+  const supabase = createSupabaseClient(cookieStore)
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  return user
+}
+
+const route = app.get('/auth/me', async (c) => {
+  const authUser = await auth()
+
+  return c.json({
+    me: authUser,
+  })
 })
 
 const fetch = app.fetch

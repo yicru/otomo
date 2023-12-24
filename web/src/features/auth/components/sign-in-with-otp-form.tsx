@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { createClient } from '@/lib/supabase/client'
+import { createSupabaseClient } from '@/lib/supabase/client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -23,7 +23,7 @@ type FormValues = z.infer<typeof formSchema>
 
 export function SignInWithOtpForm() {
   const [isLoading, setIsLoading] = useState(false)
-  const supabase = createClient()
+  const supabase = createSupabaseClient()
 
   const form = useForm<FormValues>({
     defaultValues: {

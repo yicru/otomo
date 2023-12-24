@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { createClient } from '@/lib/supabase/client'
+import { createSupabaseClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import { match } from 'ts-pattern'
 
@@ -11,7 +11,7 @@ type Props = {
 }
 
 export const SignInWithOAuthButton = ({ provider, className }: Props) => {
-  const supabase = createClient()
+  const supabase = createSupabaseClient()
 
   const icon = match(provider)
     .with('github', () => '/github.svg')
