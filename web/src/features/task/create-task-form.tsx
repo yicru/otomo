@@ -39,18 +39,19 @@ export function CreateTaskForm() {
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true)
 
-    const result = await client.api.tasks
-      .$post({ json: { url: values.url } })
-      .then((res) => res.json())
+    try {
+      const result = await client.api.tasks
+        .$post({ json: { url: values.url } })
+        .then((res) => res.json())
 
-    if ('error' in result) {
-      toast.error('エラーが発生しました', { description: result.error })
+      router.push(`/tasks/${result.task.id}`)
+    } catch (e) {
+      toast.error('エラーが発生しました', {
+        description: e instanceof Error ? e.message : '不明なエラーです',
+      })
+    } finally {
       setIsLoading(false)
-      return
     }
-
-    setIsLoading(false)
-    router.push(`/tasks/${result.task.id}`)
   }
 
   return (

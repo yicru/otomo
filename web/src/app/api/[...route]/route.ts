@@ -64,7 +64,7 @@ const route = app
       const json = c.req.valid('json')
 
       if (!authUser) {
-        return c.json({ error: 'Unauthorized' }, 401)
+        throw new HTTPException(401, { message: 'Unauthorized' })
       }
 
       const html = await ofetch(json.url)
