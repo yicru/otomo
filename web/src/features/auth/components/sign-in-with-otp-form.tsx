@@ -47,7 +47,7 @@ export function SignInWithOtpForm() {
         description: result.error.message,
       })
     } else {
-      toast.error('マジックリンクをメールで送信しました', {
+      toast.success('マジックリンクをメールで送信しました', {
         description: 'メールを確認してログインしてください',
       })
       form.reset()

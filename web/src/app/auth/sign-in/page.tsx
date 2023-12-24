@@ -13,7 +13,7 @@ import { SignInWithOtpForm } from '@/features/auth/components/sign-in-with-otp-f
 
 export default function SignIn() {
   return (
-    <div className={'pt-8'}>
+    <div className={'pt-8 px-1.5'}>
       <Card>
         <CardHeader className={'gap-1'}>
           <CardTitle>ログイン</CardTitle>
