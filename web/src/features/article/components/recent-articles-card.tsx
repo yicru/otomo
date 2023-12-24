@@ -1,47 +1,35 @@
 import { AspectRatio } from '@/components/ui/aspect-ratio'
+import { createHonoClient } from '@/lib/hono/server'
 import { ArrowRightIcon, PlayIcon } from 'lucide-react'
 
-const articles = [
-  {
-    id: '1',
-    category: 'Unreal Engine 5',
-    title: '大デザナレ展2023 出展レポートDeNAのデザインナレッジを大公開',
-    image: 'https://source.unsplash.com/random/1',
-  },
-  {
-    id: '2',
-    category: 'Unreal Engine 5',
-    title:
-      '広すぎか！UI/UXのデザイナーの職務領域 〜逆立ちしながらラーメンを食べる〜 　#UIUXデザイナー',
-    image: 'https://source.unsplash.com/random/2',
-  },
-  {
-    id: '2',
-    category: 'Unreal Engine 5',
-    title:
-      '広すぎか！UI/UXのデザイナーの職務領域 〜逆立ちしながらラーメンを食べる〜 　#UIUXデザイナー',
-    image: 'https://source.unsplash.com/random/3',
-  },
-]
+export const RecentArticlesCard = async () => {
+  const client = createHonoClient()
 
-export const RecentArticlesCard = () => {
+  const result = await client.api.articles.latest
+    .$get()
+    .then((res) => res.json())
+
+  if (result.articles.length === 0) {
+    return null
+  }
+
   return (
     <div className={'bg-[#F8F8FA] px-4 rounded-lg'}>
       <div className={'flex justify-between items-center py-6 border-b'}>
         <p className={'font-serif text-2xl'}>Recent</p>
-        <button className={'inline-flex items-center'}>
+        <button type={'button'} className={'inline-flex items-center'}>
           <span className={'text-xs font-medium'}>View More</span>
           <ArrowRightIcon className={'h-4 w-4 ml-1'} />
         </button>
       </div>
 
-      {articles.map((article) => (
+      {result.articles.map((article) => (
         <div
           key={article.id}
           className={'flex items-center gap-5 py-4 border-b last:border-0'}
         >
           <div className={'flex-1'}>
-            <div className={'text-gray-500/50 text-xs'}>{article.category}</div>
+            <div className={'text-gray-500/50 text-xs'}>カテゴリ</div>
             <div className={'text-sm font-medium line-clamp-2 mt-3'}>
               {article.title}
             </div>
@@ -55,13 +43,15 @@ export const RecentArticlesCard = () => {
             </div>
           </div>
 
-          <div className={'w-20'}>
+          <div className={'w-20 bg-black/10 rounded overflow-hidden'}>
             <AspectRatio ratio={3 / 4}>
-              <img
-                src={article.image}
-                className={'h-full w-full object-cover object-center rounded'}
-                alt=""
-              />
+              {article.image && (
+                <img
+                  src={article.image}
+                  className={'h-full w-full object-cover object-center'}
+                  alt=""
+                />
+              )}
             </AspectRatio>
           </div>
         </div>

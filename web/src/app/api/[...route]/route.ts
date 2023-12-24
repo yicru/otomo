@@ -51,6 +51,23 @@ const route = app
       me: authUser,
     })
   })
+  .get('/articles/latest', async (c) => {
+    const authUser = await auth()
+
+    if (!authUser) {
+      throw new HTTPException(401, { message: 'Unauthorized' })
+    }
+
+    const latestArticles = await db.query.articles.findMany({
+      where: (articles, { eq }) => eq(articles.userId, authUser.id),
+      orderBy: (articles, { desc }) => desc(articles.createdAt),
+      limit: 3,
+    })
+
+    return c.json({
+      articles: latestArticles,
+    })
+  })
   .post(
     'tasks',
     zValidator(
