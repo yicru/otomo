@@ -1,13 +1,15 @@
 'use client'
 
 import { Otomo } from '@/components/otomo'
+import { Button } from '@/components/ui/button'
 import { createHonoClient } from '@/lib/hono/client'
+import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
 import { match } from 'ts-pattern'
 
 export default function TaskDetail({ params }: { params: { taskId: string } }) {
-  const [isPolling, setIsPolling] = useState(false)
+  const [isPolling, setIsPolling] = useState(true)
   const client = createHonoClient()
 
   const { data } = useSWR(
@@ -62,7 +64,14 @@ export default function TaskDetail({ params }: { params: { taskId: string } }) {
         <div className={'mt-10 px-6'}>
           {match(status)
             .with('completed', () => (
-              <p className={'font-serif text-2xl text-center'}>Completed</p>
+              <div>
+                <p className={'font-serif text-2xl text-center'}>Completed</p>
+                <Link href={'/home'}>
+                  <Button size={'lg'} className={'w-full mt-4'}>
+                    ホーム画面に戻る
+                  </Button>
+                </Link>
+              </div>
             ))
             .with('error', 'failed', () => (
               <p className={'font-serif text-2xl text-center'}>Error...</p>
