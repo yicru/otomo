@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { createHonoClient } from '@/lib/hono/client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon, MicIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -26,6 +27,7 @@ type FormValues = z.infer<typeof formSchema>
 export function CreateTaskForm() {
   const [isLoading, setIsLoading] = useState(false)
   const client = createHonoClient()
+  const router = useRouter()
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -37,22 +39,18 @@ export function CreateTaskForm() {
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true)
 
-    try {
-      const result = await client.api.tasks.$post({
-        json: {
-          url: values.url,
-        },
-      })
+    const result = await client.api.tasks
+      .$post({ json: { url: values.url } })
+      .then((res) => res.json())
 
-      console.log(result)
-      form.reset()
-    } catch (e) {
-      toast.error('エラーが発生しました', {
-        description: e instanceof Error ? e.message : '不明なエラーです',
-      })
-    } finally {
+    if ('error' in result) {
+      toast.error('エラーが発生しました', { description: result.error })
       setIsLoading(false)
+      return
     }
+
+    setIsLoading(false)
+    router.push(`/tasks/${result.task.id}`)
   }
 
   return (

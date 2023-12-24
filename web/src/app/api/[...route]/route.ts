@@ -3,10 +3,15 @@ import { articles, tasks, users } from '@/db/schema'
 import { env } from '@/lib/env'
 import { pollyClient } from '@/lib/polly'
 import { createSupabaseClient } from '@/lib/supabase/server'
-import { StartSpeechSynthesisTaskCommand } from '@aws-sdk/client-polly'
+import {
+  GetSpeechSynthesisTaskCommand,
+  StartSpeechSynthesisTaskCommand,
+} from '@aws-sdk/client-polly'
 import { zValidator } from '@hono/zod-validator'
 import * as cheerio from 'cheerio'
+import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
+import { HTTPException } from 'hono/http-exception'
 import { convert } from 'html-to-text'
 import { cookies } from 'next/headers'
 import { ofetch } from 'ofetch'
@@ -126,6 +131,55 @@ const route = app
 
       return c.json({
         task: result.task,
+      })
+    },
+  )
+  .post(
+    '/tasks/:taskId/status',
+    zValidator(
+      'param',
+      z.object({
+        taskId: z.string().min(1),
+      }),
+    ),
+    async (c) => {
+      const authUser = await auth()
+      const param = c.req.valid('param')
+
+      if (!authUser) {
+        throw new HTTPException(401, { message: 'Unauthorized' })
+      }
+
+      const task = await db.query.tasks.findFirst({
+        where: (tasks, { eq, and }) =>
+          and(eq(tasks.id, param.taskId), eq(tasks.userId, authUser.id)),
+      })
+
+      if (!task) {
+        throw new HTTPException(404, { message: 'Task is not found' })
+      }
+
+      const command = new GetSpeechSynthesisTaskCommand({
+        TaskId: task.pollyTaskId,
+      })
+
+      const { SynthesisTask } = await pollyClient.send(command)
+
+      if (!SynthesisTask) {
+        throw new HTTPException(404, { message: 'SynthesisTask is not found' })
+      }
+
+      const [updated] = await db
+        .update(tasks)
+        .set({
+          status: SynthesisTask.TaskStatus,
+          statusReason: SynthesisTask.TaskStatusReason,
+        })
+        .where(eq(tasks.id, task.id))
+        .returning()
+
+      return c.json({
+        task: updated,
       })
     },
   )
