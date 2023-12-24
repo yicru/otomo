@@ -13,6 +13,8 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@aws-sdk/client-polly": "^3.478.0",
+    "@hono/zod-validator": "^0.1.11",
     "@hookform/resolvers": "^3.3.2",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
@@ -45,6 +47,7 @@
     "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.39.1",
     "@t3-oss/env-nextjs": "^0.7.1",
+    "cheerio": "^1.0.0-rc.12",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
@@ -52,9 +55,11 @@
     "drizzle-orm": "^0.29.1",
     "embla-carousel-react": "^8.0.0-rc17",
     "hono": "^3.11.10",
+    "html-to-text": "^9.0.5",
     "lucide-react": "^0.300.0",
     "next": "14.0.4",
     "next-themes": "^0.2.1",
+    "ofetch": "^1.3.3",
     "postgres": "^3.4.3",
     "react": "^18",
     "react-day-picker": "^8.10.0",
@@ -70,6 +75,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.4.1",
+    "@types/html-to-text": "^9.0.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

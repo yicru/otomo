@@ -1,7 +1,5 @@
 import { Otomo } from '@/components/otomo'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { MicIcon } from 'lucide-react'
+import { CreateTaskForm } from '@/features/task/create-task-form'
 
 export const NewArticleCard = () => {
   return (
@@ -28,14 +26,8 @@ export const NewArticleCard = () => {
 
       <p className={'mt-4'}>今日はどんな記事を聞く？</p>
 
-      <div className={'relative w-full mt-6'}>
-        <Input
-          placeholder={'Add Link...'}
-          className={'py-5 pl-4 pr-16 bg-white border-black'}
-        />
-        <Button className={'absolute h-auto top-1 bottom-1 right-1'}>
-          <MicIcon className={'h-4 w-4'} />
-        </Button>
+      <div className={'w-full mt-6'}>
+        <CreateTaskForm />
       </div>
     </div>
   )
