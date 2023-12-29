@@ -3,6 +3,7 @@ import { articles, tasks, users } from '@/db/schema'
 import { env } from '@/lib/env'
 import { pollyClient } from '@/lib/polly'
 import { createSupabaseClient } from '@/lib/supabase/server'
+import { textToSpeechClient } from '@/lib/tts'
 import {
   GetSpeechSynthesisTaskCommand,
   StartSpeechSynthesisTaskCommand,
@@ -200,6 +201,22 @@ const route = app
       })
     },
   )
+  .post('/internal/tts', async (c) => {
+    const result = await textToSpeechClient.synthesizeSpeech({
+      input: {
+        text: 'こんにちは',
+      },
+      voice: {
+        languageCode: 'ja-JP',
+        name: 'ja-JP-Wavenet-A',
+      },
+      audioConfig: {
+        audioEncoding: 'MP3',
+      },
+    })
+
+    return c.json({ result })
+  })
 
 const fetch = app.fetch
 
