@@ -9,42 +9,37 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  CreateArticleInput,
+  createArticleSchema,
+} from '@/features/article/validations/create-article-schema'
 import { createHonoClient } from '@/lib/hono/client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon, MicIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { z } from 'zod'
 
-const formSchema = z.object({
-  url: z.string().url(),
-})
-
-type FormValues = z.infer<typeof formSchema>
-
-export function CreateTaskForm() {
+export function CreateArticleForm() {
   const [isLoading, setIsLoading] = useState(false)
   const client = createHonoClient()
-  const router = useRouter()
 
-  const form = useForm<FormValues>({
+  const form = useForm<CreateArticleInput>({
     defaultValues: {
       url: '',
     },
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(createArticleSchema),
   })
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (values: CreateArticleInput) => {
     setIsLoading(true)
 
     try {
-      const result = await client.api.tasks
+      const result = await client.api.articles
         .$post({ json: { url: values.url } })
         .then((res) => res.json())
 
-      router.push(`/tasks/${result.task.id}`)
+      console.log(result)
     } catch (e) {
       toast.error('エラーが発生しました', {
         description: e instanceof Error ? e.message : '不明なエラーです',

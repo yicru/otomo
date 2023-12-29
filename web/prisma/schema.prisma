@@ -19,5 +19,24 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 
+  Article Article[]
+
   @@map("users")
+}
+
+model Article {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  User    User   @relation(fields: [user_id], references: [id])
+  user_id String @db.Uuid
+
+  url      String  @db.Text
+  title    String  @db.Text
+  og_image String? @db.Text
+  content  String  @db.Text
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@map("articles")
 }

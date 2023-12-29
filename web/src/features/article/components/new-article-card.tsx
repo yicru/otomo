@@ -1,5 +1,5 @@
 import { Otomo } from '@/components/otomo'
-import { CreateTaskForm } from '@/features/task/create-task-form'
+import { CreateArticleForm } from '@/features/article/components/create-article-form'
 
 export const NewArticleCard = () => {
   return (
@@ -27,7 +27,7 @@ export const NewArticleCard = () => {
       <p className={'mt-4'}>今日はどんな記事を聞く？</p>
 
       <div className={'w-full mt-6'}>
-        <CreateTaskForm />
+        <CreateArticleForm />
       </div>
     </div>
   )
