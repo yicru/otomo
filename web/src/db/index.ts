@@ -1,8 +1,13 @@
-import { env } from '@/lib/env'
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
-import * as schema from './schema'
+import { DB } from '@/db/types'
+import { Kysely, PostgresDialect } from 'kysely'
+import { Pool } from 'pg'
 
-const client = postgres(env.DATABASE_URL, { prepare: false })
+const dialect = new PostgresDialect({
+  pool: new Pool({
+    connectionString: process.env.DATABASE_URL,
+  }),
+})
 
-export const db = drizzle(client, { schema })
+export const db = new Kysely<DB>({
+  dialect,
+})
