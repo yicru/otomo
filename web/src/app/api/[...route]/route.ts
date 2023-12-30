@@ -20,7 +20,7 @@ const auth = async () => {
     data: { user: supabaseUser },
   } = await supabase.auth.getUser()
 
-  if (!supabaseUser || !supabaseUser.email) {
+  if (!supabaseUser?.email) {
     return null
   }
 

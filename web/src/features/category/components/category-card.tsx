@@ -33,7 +33,7 @@ export const CategoryCard = () => {
           <span>Finder</span>
           <span className={'text-xs ml-2'}>(26)</span>
         </p>
-        <button>
+        <button type={'button'}>
           <PlusCircleIcon className={'h-5 w-5'} />
         </button>
       </div>
@@ -50,6 +50,7 @@ export const CategoryCard = () => {
         }
       >
         <button
+          type={'button'}
           className={
             'inline-flex items-center rounded-[50%] border border-black py-3 px-8'
           }
