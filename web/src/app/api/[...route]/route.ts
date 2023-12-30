@@ -1,7 +1,6 @@
 import { db } from '@/db'
 import { createArticleSchema } from '@/features/article/validations/create-article-schema'
 import { createSupabaseClient } from '@/lib/supabase/server'
-import { textToSpeechClient } from '@/lib/tts'
 import { zValidator } from '@hono/zod-validator'
 import * as cheerio from 'cheerio'
 import { Hono } from 'hono'
@@ -99,22 +98,6 @@ const route = app
     return c.json({
       article: article,
     })
-  })
-  .post('/internal/tts', async (c) => {
-    const result = await textToSpeechClient.synthesizeSpeech({
-      input: {
-        text: 'こんにちは',
-      },
-      voice: {
-        languageCode: 'ja-JP',
-        name: 'ja-JP-Wavenet-A',
-      },
-      audioConfig: {
-        audioEncoding: 'MP3',
-      },
-    })
-
-    return c.json({ result })
   })
 
 const fetch = app.fetch
