@@ -1,6 +1,7 @@
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { createHonoClient } from '@/lib/hono/server'
 import { ArrowRightIcon, PlayIcon } from 'lucide-react'
+import Link from 'next/link'
 
 export const RecentArticlesCard = async () => {
   const client = createHonoClient()
@@ -24,7 +25,8 @@ export const RecentArticlesCard = async () => {
       </div>
 
       {result.articles.map((article) => (
-        <div
+        <Link
+          href={`/articles/${article.id}`}
           key={article.id}
           className={'flex items-center gap-5 py-4 border-b last:border-0'}
         >
@@ -45,16 +47,16 @@ export const RecentArticlesCard = async () => {
 
           <div className={'w-20 bg-black/10 rounded overflow-hidden'}>
             <AspectRatio ratio={3 / 4}>
-              {article.image && (
+              {article.og_image && (
                 <img
-                  src={article.image}
+                  src={article.og_image}
                   className={'h-full w-full object-cover object-center'}
                   alt=""
                 />
               )}
             </AspectRatio>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   )

@@ -7,7 +7,11 @@ type Props = {
 
 export default async function AppLayout(props: Props) {
   return (
-    <div className={'w-full max-w-lg mx-auto'}>
+    <div
+      className={
+        'grid grid-rows-[auto,1fr] min-h-[100dvh] w-full max-w-lg mx-auto'
+      }
+    >
       <Header />
       <div>{props.children}</div>
     </div>
