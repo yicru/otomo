@@ -1,9 +1,9 @@
 import { AspectRatio } from '@/components/ui/aspect-ratio'
-import { Article } from '@/db/types'
+import { ArticleModel } from '@/db/models'
 import { cn } from '@/lib/utils'
 
 type Props = {
-  article: Article
+  article: ArticleModel
   className?: string
 }
 
