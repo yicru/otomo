@@ -8,6 +8,7 @@ import { HTTPException } from 'hono/http-exception'
 import { convert } from 'html-to-text'
 import { cookies } from 'next/headers'
 import { ofetch } from 'ofetch'
+import { z } from 'zod'
 
 const app = new Hono().basePath('/api')
 
@@ -62,6 +63,33 @@ const route = app
       articles: latestArticles,
     })
   })
+  .get(
+    '/articles/:articleId',
+    zValidator(
+      'param',
+      z.object({
+        articleId: z.string(),
+      }),
+    ),
+    async (c) => {
+      const authUser = await auth()
+      const param = c.req.valid('param')
+
+      if (!authUser) {
+        throw new HTTPException(401, { message: 'Unauthorized' })
+      }
+
+      const article = await db
+        .selectFrom('articles')
+        .where('id', '=', param.articleId)
+        .selectAll()
+        .executeTakeFirstOrThrow()
+
+      return c.json({
+        article: article,
+      })
+    },
+  )
   .post('articles', zValidator('json', createArticleSchema), async (c) => {
     const authUser = await auth()
     const json = c.req.valid('json')
@@ -93,7 +121,7 @@ const route = app
         content: content,
       })
       .returningAll()
-      .executeTakeFirst()
+      .executeTakeFirstOrThrow()
 
     return c.json({
       article: article,

@@ -16,6 +16,7 @@ import {
 import { createHonoClient } from '@/lib/hono/client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon, MicIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -23,6 +24,7 @@ import { toast } from 'sonner'
 export function CreateArticleForm() {
   const [isLoading, setIsLoading] = useState(false)
   const client = createHonoClient()
+  const router = useRouter()
 
   const form = useForm<CreateArticleInput>({
     defaultValues: {
@@ -39,7 +41,7 @@ export function CreateArticleForm() {
         .$post({ json: { url: values.url } })
         .then((res) => res.json())
 
-      console.log(result)
+      router.push(`/articles/${result.article.id}/done`)
     } catch (e) {
       toast.error('エラーが発生しました', {
         description: e instanceof Error ? e.message : '不明なエラーです',

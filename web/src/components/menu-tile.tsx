@@ -13,7 +13,10 @@ export const MenuTile = ({ href, className, label, children }: Props) => {
   return (
     <Link
       href={href}
-      className={cn('relative flex items-center w-full h-40 pl-8 rounded-lg', className)}
+      className={cn(
+        'relative flex items-center w-full h-40 pl-8 rounded-lg',
+        className,
+      )}
     >
       <p className={'text-4xl font-serif'}>{label}</p>
       {children}
