@@ -19,7 +19,8 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 
-  Article Article[]
+  Article       Article[]
+  SynthesisTask SynthesisTask[]
 
   @@map("users")
 }
@@ -38,5 +39,37 @@ model Article {
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 
+  SynthesisTask SynthesisTask?
+
   @@map("articles")
+}
+
+enum TaskStatus {
+  COMPLETED
+  FAILED
+  IN_PROGRESS
+  SCHEDULED
+}
+
+model SynthesisTask {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  User    User   @relation(fields: [user_id], references: [id])
+  user_id String @db.Uuid
+
+  Article    Article @relation(fields: [article_id], references: [id])
+  article_id String  @unique @db.Uuid
+
+  polly_task_id      String  @unique
+  engine             String?
+  voice_id           String?
+  status             String?
+  status_reason      String?
+  request_characters Int?
+  output_url         String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@map("synthesis_tasks")
 }

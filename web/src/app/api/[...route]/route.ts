@@ -1,6 +1,13 @@
 import { db } from '@/db'
 import { createArticleSchema } from '@/features/article/validations/create-article-schema'
+import { getTaskStatus } from '@/features/synthesis-task/utils/get-task-status'
+import { env } from '@/lib/env'
+import { pollyClient } from '@/lib/polly'
 import { createSupabaseClient } from '@/lib/supabase/server'
+import {
+  GetSpeechSynthesisTaskCommand,
+  StartSpeechSynthesisTaskCommand,
+} from '@aws-sdk/client-polly'
 import { zValidator } from '@hono/zod-validator'
 import * as cheerio from 'cheerio'
 import { Hono } from 'hono'
@@ -111,22 +118,111 @@ const route = app
       ],
     })
 
-    const article = await db
-      .insertInto('articles')
-      .values({
-        user_id: authUser.id,
-        url: json.url,
-        title: title,
-        og_image: ogImage,
-        content: content,
-      })
-      .returningAll()
-      .executeTakeFirstOrThrow()
+    const command = new StartSpeechSynthesisTaskCommand({
+      Engine: 'standard',
+      OutputFormat: 'mp3',
+      OutputS3BucketName: env.AWS_POLLY_OUTPUT_BUCKET,
+      Text: content,
+      VoiceId: 'Mizuki',
+    })
+
+    const { SynthesisTask } = await pollyClient.send(command)
+
+    if (!SynthesisTask?.TaskId) {
+      throw new HTTPException(500, { message: 'Failed to create task' })
+    }
+
+    const result = await db.transaction().execute(async (trx) => {
+      const article = await trx
+        .insertInto('articles')
+        .values({
+          user_id: authUser.id,
+          url: json.url,
+          title: title,
+          og_image: ogImage,
+          content: content,
+        })
+        .returningAll()
+        .executeTakeFirstOrThrow()
+
+      const synthesisTask = await trx
+        .insertInto('synthesis_tasks')
+        .values({
+          user_id: authUser.id,
+          article_id: article.id,
+          polly_task_id: SynthesisTask.TaskId as string,
+          engine: SynthesisTask.Engine,
+          voice_id: SynthesisTask.VoiceId,
+          status: getTaskStatus(SynthesisTask),
+          status_reason: SynthesisTask.TaskStatusReason,
+          request_characters: SynthesisTask.RequestCharacters,
+          output_url: SynthesisTask.OutputUri,
+        })
+        .returningAll()
+        .executeTakeFirstOrThrow()
+
+      return { article, synthesisTask }
+    })
 
     return c.json({
-      article: article,
+      article: result.article,
+      synthesisTask: result.synthesisTask,
     })
   })
+  .post(
+    '/articles/:articleId/progress',
+    zValidator(
+      'param',
+      z.object({
+        articleId: z.string(),
+      }),
+    ),
+    async (c) => {
+      const authUser = await auth()
+      const param = c.req.valid('param')
+
+      if (!authUser) {
+        throw new HTTPException(401, { message: 'Unauthorized' })
+      }
+
+      const article = await db
+        .selectFrom('articles')
+        .where('articles.id', '=', param.articleId)
+        .where('articles.user_id', '=', authUser.id)
+        .innerJoin(
+          'synthesis_tasks',
+          'articles.id',
+          'synthesis_tasks.article_id',
+        )
+        .selectAll()
+        .executeTakeFirstOrThrow()
+
+      const command = new GetSpeechSynthesisTaskCommand({
+        TaskId: article.polly_task_id,
+      })
+
+      const { SynthesisTask } = await pollyClient.send(command)
+
+      if (!SynthesisTask) {
+        throw new HTTPException(404, { message: 'SynthesisTask is not found' })
+      }
+
+      const updated = await db
+        .updateTable('synthesis_tasks')
+        .where('article_id', '=', param.articleId)
+        .set({
+          status: getTaskStatus(SynthesisTask),
+          status_reason: SynthesisTask.TaskStatusReason,
+        })
+        .returningAll()
+        .executeTakeFirstOrThrow()
+
+      return c.json({
+        article: article,
+        synthesisTask: updated,
+      })
+    },
+  )
 
 const fetch = app.fetch
 

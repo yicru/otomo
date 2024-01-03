@@ -41,7 +41,7 @@ export function CreateArticleForm() {
         .$post({ json: { url: values.url } })
         .then((res) => res.json())
 
-      router.push(`/articles/${result.article.id}/done`)
+      router.push(`/articles/${result.article.id}/progress`)
     } catch (e) {
       toast.error('エラーが発生しました', {
         description: e instanceof Error ? e.message : '不明なエラーです',

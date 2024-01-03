@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { ArticlePreview } from '@/features/article/components/article-preview'
 import { createHonoClient } from '@/lib/hono/server'
 import { MicIcon } from 'lucide-react'
+import Link from 'next/link'
 
 export default async function ArticleDone({
   params,
@@ -46,10 +47,12 @@ export default async function ArticleDone({
         </div>
 
         <div className={'mt-10 px-6'}>
-          <Button size={'lg'} className={'w-full h-14 mt-4'}>
-            <MicIcon className={'h-4 w-4 mr-2'} />
-            Listen
-          </Button>
+          <Link href={`/articles/${article.id}`} className={'mt-4'}>
+            <Button size={'lg'} className={'w-full h-14'}>
+              <MicIcon className={'h-4 w-4 mr-2'} />
+              Listen
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
