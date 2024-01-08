@@ -39,6 +39,11 @@
     "globals": ["React"]
   },
   "files": {
-    "ignore": [".next", "src/components/ui"]
+    "ignore": [
+      ".next",
+      "src/components/ui",
+      "src/db/enums.ts",
+      "src/db/types.ts"
+    ]
   }
 }
