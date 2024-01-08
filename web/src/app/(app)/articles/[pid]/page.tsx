@@ -1,8 +1,7 @@
+import { AudioPlayer } from '@/components/audio-player'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
-import { Progress } from '@/components/ui/progress'
 import { createHonoClient } from '@/lib/hono/server'
 import { ArrowLeftIcon, DotsHorizontalIcon } from '@radix-ui/react-icons'
-import { PlayIcon, SkipBackIcon, SkipForwardIcon } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function ArticleDetail({
@@ -16,7 +15,7 @@ export default async function ArticleDetail({
     },
   })
 
-  const { article } = await result.json()
+  const { article, synthesisTask } = await result.json()
 
   return (
     <div className={'h-full p-1.5'}>
@@ -58,33 +57,15 @@ export default async function ArticleDetail({
             </p>
           </div>
 
-          <div
-            className={
-              'sticky bottom-0 bg-gradient-to-t from-[#F8F8FA] from-70% to-transparent px-6 pt-20 pb-6'
-            }
-          >
-            <Progress value={33} className={'h-1'} />
-            <div className={'flex justify-between mt-1 text-xs'}>
-              <p>0:42</p>
-              <p>-2:42</p>
+          {synthesisTask?.output_url && (
+            <div
+              className={
+                'sticky bottom-0 bg-gradient-to-t from-[#F8F8FA] from-70% to-transparent px-6 pt-20 pb-6'
+              }
+            >
+              <AudioPlayer src={synthesisTask.output_url} />
             </div>
-            <div className={'flex justify-around items-center px-4 mt-2'}>
-              <button type={'button'}>
-                <SkipBackIcon className={'h-6 w-6'} />
-              </button>
-              <button
-                type={'button'}
-                className={
-                  'h-14 w-14 grid place-content-center bg-black text-white rounded-full'
-                }
-              >
-                <PlayIcon className={'h-6 w-6'} />
-              </button>
-              <button type={'button'}>
-                <SkipForwardIcon className={'h-6 w-6'} />
-              </button>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

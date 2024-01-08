@@ -92,8 +92,15 @@ const route = app
         .selectAll()
         .executeTakeFirstOrThrow()
 
+      const synthesisTask = await db
+        .selectFrom('synthesis_tasks')
+        .where('article_id', '=', param.articleId)
+        .selectAll()
+        .executeTakeFirst()
+
       return c.json({
         article: article,
+        synthesisTask: synthesisTask,
       })
     },
   )
